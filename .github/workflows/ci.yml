@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# A new push to a PR cancels the run still in progress for that PR.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  SCHEME: GoodRun
+  PROJECT: GoodRun.xcodeproj
+
+jobs:
+  format:
+    name: Formatting (swift-format)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check formatting
+        run: |
+          echo "If this fails, run 'xcrun swift-format format --in-place --recursive GoodRun GoodRunTests' locally and commit the result."
+          xcrun swift-format lint --strict --recursive GoodRun GoodRunTests
+
+  lint:
+    name: Linting (swiftlint)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: brew install swiftlint
+
+      - name: Check for lint errors
+        run: swiftlint lint --strict
+
+  build:
+    name: Build (xcodebuild)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # GitHub's macOS runners ship several Xcode versions side by side; the
+      # default symlink isn't always the newest one, and this project's
+      # deployment target needs a recent SDK.
+      - name: Select latest available Xcode
+        run: sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -n1)"
+
+      # No Apple Developer account is available in CI, and none is needed to
+      # catch compile errors -- so this builds unsigned for the simulator.
+      # It intentionally doesn't run the existing test target: that test
+      # makes live network calls to a real backend at 127.0.0.1:8000, which
+      # isn't available here and isn't a real isolated unit test.
+      - name: Build for the simulator
+        run: |
+          xcodebuild build-for-testing \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO
+
+  workflows:
+    name: Workflow lint (actionlint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Catches YAML mistakes, bad expressions, and unknown action inputs in this
+      # file itself, which nothing else here would notice until a run failed.
+      - name: Lint workflow files
+        env:
+          ACTIONLINT_VERSION: 1.7.12
+        run: |
+          curl -sSL -o download-actionlint.bash \
+            "https://raw.githubusercontent.com/rhysd/actionlint/v$ACTIONLINT_VERSION/scripts/download-actionlint.bash"
+          bash download-actionlint.bash "$ACTIONLINT_VERSION"
+          ./actionlint -color

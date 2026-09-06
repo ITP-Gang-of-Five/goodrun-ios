@@ -1,0 +1,8 @@
+# The CI pipeline, Dependabot config, and this file itself.
+/.github/                                          @ITP-Gang-of-Five/maintainers
+
+# The shared scheme CI builds and tests against.
+/GoodRun.xcodeproj/xcshareddata/                   @ITP-Gang-of-Five/maintainers
+
+# Lint and format configuration.
+/.swiftlint.yml                                    @ITP-Gang-of-Five/maintainers
