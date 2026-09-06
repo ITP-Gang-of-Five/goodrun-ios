@@ -82,5 +82,5 @@ struct RefreshTokenResponse: Decodable {
 
 public class AuthService {
   public static let shared = AuthService()
-  var jwtToken: String? = nil
+  var jwtToken: String?
 }
