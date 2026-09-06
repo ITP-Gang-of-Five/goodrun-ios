@@ -26,12 +26,3 @@ identifier_name:
     warning: 2
   excluded:
     - id
-    # Pre-existing names on the network layer. Renaming risks silently
-    # changing the JSON wire format (RunIdDto.run_id has no CodingKeys) or
-    # touching call sites across the app for no behavior change -- out of
-    # scope for lint setup. New identifiers should still follow lowerCamelCase.
-    - run_id
-    - Login
-    - Signup
-    - GetAllRuns
-    - AcceptRun
