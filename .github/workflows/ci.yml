@@ -50,7 +50,7 @@ jobs:
       # default symlink isn't always the newest one, and this project's
       # deployment target needs a recent SDK.
       - name: Select latest available Xcode
-        run: sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -n1)"
+        run: sudo xcode-select -s "$(find /Applications -maxdepth 1 -name 'Xcode_*.app' | sort -V | tail -n1)"
 
       # No Apple Developer account is available in CI, and none is needed to
       # catch compile errors -- so this builds unsigned for the simulator.
