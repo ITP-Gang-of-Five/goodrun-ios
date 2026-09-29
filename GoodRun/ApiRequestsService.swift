@@ -8,8 +8,8 @@
 import Foundation
 
 struct HttpRequestReponse {
-    let statusCode: Int
-    let body: Data?
+  let statusCode: Int
+  let body: Data?
 }
 
 public class ApiRequestsService {

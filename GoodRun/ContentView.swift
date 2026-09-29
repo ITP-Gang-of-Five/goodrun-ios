@@ -8,9 +8,9 @@
 import SwiftUI
 
 public enum AppScreen {
-    case login
-    case home
-    case run
+  case login
+  case home
+  case run
 }
 
 struct ContentView: View {
@@ -39,8 +39,7 @@ struct ContentView: View {
         }
     }
 }
- 
 
 #Preview {
-    ContentView()
+  ContentView()
 }

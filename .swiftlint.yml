@@ -1,0 +1,28 @@
+included:
+  - GoodRun
+  - GoodRunTests
+
+opt_in_rules:
+  - empty_count
+  - explicit_init
+  - closure_spacing
+  - redundant_type_annotation
+  - toggle_bool
+
+disabled_rules:
+  - todo
+  # swift-format adds trailing commas to multi-line collection literals by
+  # default; defer to the formatter instead of fighting it here.
+  - trailing_comma
+
+line_length:
+  warning: 130
+  error: 160
+  ignores_urls: true
+  ignores_comments: true
+
+identifier_name:
+  min_length:
+    warning: 2
+  excluded:
+    - id

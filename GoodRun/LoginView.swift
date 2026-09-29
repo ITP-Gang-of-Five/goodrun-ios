@@ -42,6 +42,6 @@ struct LoginView: View {
 
 
 #Preview {
-    var state = AppScreen.login
-    LoginView(currentScreen: .constant(.login))
+  var state = AppScreen.login
+  LoginView(currentScreen: .constant(.login))
 }
