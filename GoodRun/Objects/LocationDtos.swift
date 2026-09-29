@@ -1,43 +1,79 @@
-//
-//  Enums.swift
-//  GoodRun
-//
-//  Created by Max Healey on 25/9/2026.
-//
-
 import Foundation
 
-struct LoginRequest: Codable {
-    let email: String
-    let password: String
+
+// MARK: - Tracking
+package struct UpdateTrackingLocationRequest: Codable {
+    let latitude: Double
+    let longitude: Double
 }
 
-struct LoginResponse: Codable {
-    let accessToken: String
-    let refreshToken: String
-    let user: UserSummary
+package struct TrackOrderResponse: Codable {
+    let volunteer: UserSummary
+    let latitude: Double
+    let longitude: Double
+    let updatedAt: Date
+}
+
+// MARK: - Order Images
+package struct UploadImageRequest: Codable {
+    let contentType: String
+    let data: String
+}
+
+package struct UploadImageResponse: Codable {
+    let imageId: String
+}
+
+// MARK: - Locations & Routing
+package struct LocationsResponse: Codable {
+    let locations: [Location]
+}
+
+package struct AutocompleteResponse: Codable {
+    let suggestions: [Suggestion]
     
-    enum CodingKeys: String, CodingKey {
-        case accessToken = "access_token"
-        case refreshToken = "refresh_token"
-        case user
+    package struct Suggestion: Codable, Identifiable {
+        package var id: String { suggestionId }
+        let suggestionId: String
+        let label: String
     }
 }
 
-struct RefreshTokenRequest: Codable {
-    let refreshToken: String
+package struct GeocodeResponse: Codable {
+    let address: String
+    let latitude: Double
+    let longitude: Double
+}
+
+package struct CreateLocationRequest: Codable {
+    let name: String
+    let suggestionId: String?
+    let address: String?
+}
+
+package struct CreateLocationResponse: Codable {
+    let locationId: String
+}
+
+// MARK: - Routing
+package struct CalculateRouteRequest: Codable {
+    let stops: [RouteStop]
     
-    enum CodingKeys: String, CodingKey {
-        case refreshToken = "refresh_token"
+    package struct RouteStop: Codable {
+        let locationId: String
+        let latitude: Double
+        let longitude: Double
     }
 }
 
-struct RefreshTokenResponse: Codable {
-    let accessToken: String
-    let refreshToken: String
+package struct CalculateRouteResponse: Codable {
+    let distanceMeters: Int
+    let durationSeconds: Int
+    let geometry: RouteGeometry
+    let provider: String
     
-    enum CodingKeys: String, CodingKey {
-        case accessToken = "access_token"
-        case refreshToken = "refresh_token"
+    package struct RouteGeometry: Codable {
+        let type: String
+        let coordinates: [[Double]]
     }
 }

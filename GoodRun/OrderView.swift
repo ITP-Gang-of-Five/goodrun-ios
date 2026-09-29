@@ -1,14 +1,5 @@
-//
-//  SwiftUIView.swift
-//  GoodRun
-//
-//  Created by Max Healey on 16/8/2026.
-//
 import SwiftUI
 import CoreLocation
-
-
-import SwiftUI
 
 struct ToFromView: View {
     let to: String
@@ -18,7 +9,8 @@ struct ToFromView: View {
     @ScaledMetric(relativeTo: .body) private var timelineLineWidth: CGFloat = 2
     
     var body: some View {
-        HStack(alignment: .top, spacing: 16) {
+        HStack(alignment: .top, spacing: 12) {
+            // Timeline
             VStack(spacing: 0) {
                 Circle()
                     .fill(Color.white)
@@ -28,66 +20,62 @@ struct ToFromView: View {
                 Rectangle()
                     .fill(Color.gray.opacity(0.3))
                     .frame(width: timelineLineWidth)
-                    .frame(minHeight: 30)
+                    .frame(maxHeight: .infinity)
                 
                 Circle()
                     .fill(Color.red)
                     .frame(width: timelineDotSize, height: timelineDotSize)
             }
             .padding(.top, 4)
-            
+            .padding(.bottom, 6)
 
-            VStack(alignment: .leading, spacing: 20) {
+            // Addresses
+            VStack(alignment: .leading, spacing: 16) {
                 Text(from)
+                    .font(.subheadline)
                 Text(to)
+                    .font(.subheadline)
             }
-        }.fixedSize(horizontal: false, vertical: true)
+        }
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
 
-
-
 struct OrderView: View {
-    let run: Run
+    let order: Order
     @Binding var isSelected: Bool
+    
+    @ScaledMetric(relativeTo: .title) private var puckSize: CGFloat = 56
     
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
             
-            // Selection Checkbox
-            Button(action: {
-                withAnimation { isSelected.toggle() }
-            }) {
-                Image(systemName: isSelected ? "checkmark.square.fill" : "circle")
-                    .foregroundColor(isSelected ? .blue : .secondary)
-                    .font(.title2)
-            }
-            .padding(.top, 2)
+            Toggle(order.orderId, isOn: $isSelected)
+                .toggleStyle(CheckboxToggleStyle())
+                .padding(.top, 2)
             
-
             VStack(alignment: .leading, spacing: 12) {
                 
-                // Title - Run title and Expiration
+                // Title and Urgency
                 HStack {
-                    Text(run.toLocation.name)
+                    Text(order.to.name)
                         .font(.headline)
                         .lineLimit(1)
                     
-                    Text(run.expiryTime!.formatted())
+                    Text(order.dueAt!.formatted(date: .omitted, time: .shortened))
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(urgencyColor) // Replace with your color logic
+                        .background(urgencyColor)
                         .clipShape(Capsule())
                     
                     Spacer()
                 }
                 
-                // Notes
-                if !run.notes.isEmpty {
-                    Text(run.notes)
+                if !order.description.isEmpty {
+                    Text(order.description)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                         .lineLimit(2)
@@ -95,19 +83,18 @@ struct OrderView: View {
                 
                 // Route Timeline & Distance Puck
                 HStack(alignment: .center) {
-                    ToFromView(to: run.toLocation.name, from: run.fromLocation.name)
-                    
-                    distancePuck.padding(.leading)
+                    ToFromView(to: order.to.name, from: order.from.name)
+                    distancePuck
                 }
             }
         }
-        .padding(30)
+        .padding()
+        .cornerRadius(12)
     }
-    
     
     private var distancePuck: some View {
         VStack(spacing: 2) {
-            Text(distanceString)
+            Text(distanceValue)
                 .font(.subheadline)
                 .fontWeight(.bold)
                 .foregroundColor(.primary)
@@ -117,48 +104,54 @@ struct OrderView: View {
                 .fontWeight(.semibold)
                 .foregroundColor(.secondary)
         }
-        .frame(width: 56, height: 56) // Perfect circle size
-        .background(Color.blue.opacity(0.1)) // Subtle tint background
+        .frame(width: puckSize, height: puckSize)
+        .background(Color.blue.opacity(0.1))
         .clipShape(Circle())
     }
-
     
     private var urgencyColor: Color {
-        switch run.urgency {
+        switch order.urgency {
         case .low: return .green
         case .medium: return .orange
         case .high: return .red
         }
     }
     
-    private var distanceString: String {
-        let locationTo = CLLocation(latitude: run.toLocation.latitude, longitude: run.toLocation.longitude)
-        let locationFrom = CLLocation(latitude: run.fromLocation.latitude, longitude: run.fromLocation.longitude)
+    private var distanceValue: String {
+        let locationTo = CLLocation(latitude: order.to.latitude, longitude: order.to.longitude)
+        let locationFrom = CLLocation(latitude: order.from.latitude, longitude: order.from.longitude)
 
-        let distanceInMeters = locationTo.distance(from: locationFrom)
-        let distanceInKilometers = distanceInMeters / 1000
-        
-        return String(format: "%.1f km", distanceInKilometers)
+        let distanceInKilometers = locationTo.distance(from: locationFrom) / 1000
+        return String(format: "%.1f", distanceInKilometers)
+    }
+}
+
+struct CheckboxToggleStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Button {
+            configuration.isOn.toggle()
+        } label: {
+            Image(systemName: configuration.isOn ? "checkmark.square.fill" : "square")
+                .foregroundColor(configuration.isOn ? .blue : .secondary)
+                .font(.title2)
+        }
+        .buttonStyle(.plain)
     }
 }
 
 #Preview {
-    let to = Location(name: "Monash Uni", longitude: 4.56, latitude: 1.23)
-    let from = Location(name: "Warehouse", longitude: 4.56, latitude: 1.3)
 
-    RunView(run:
-                Run(
-                    id: 1,
-                    name: "Monash Uni - Warehouse",
-                    size: .small,
-                    toLocation: to,
-                    fromLocation: from,
-                    status: .low,
-                    createdBy: 1,
-                    createdTime: Date(),
-                    urgency: .high,
-                    assignedTo: [1],
-                    expiryTime: Date(),
-                    completedTime: Date(),
-                    notes: "Handle with care"), isSelected: .constant(true))
+    let to = Location(locationId: UUID().uuidString, name: "Monash Uni", latitude: 1.23, longitude: 4.56)
+
+    let from = Location(locationId: UUID().uuidString, name: "Warehouse", latitude: 1.26, longitude: 4.56)
+
+
+
+    OrderView(order:
+
+                Order(orderId: UUID().uuidString, runId: UUID().uuidString, size: .large, description: "Desc", status: .pending, urgency: .high, from: from, to: to, fromOrganisation: nil, toOrganisation: nil, volunteer: nil, dueAt: Date.now, pickupNotes: "Doorbell", dropoffNotes: "Door", createdBy: UserSummary(userId: "abcd", name: "Max", role: .admin), createdAt: Date.now),
+
+              isSelected: .constant(true))
+
 }
+

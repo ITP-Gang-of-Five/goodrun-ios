@@ -7,55 +7,63 @@
 
 import Foundation
 
-enum Role: String, Codable {
-    case admin = "ADMIN"
-    case volunteer = "VOLUNTEER"
-    case organisation = "ORGANISATION"
+package struct ErrorResponse: Codable, Error {
+    let error: ErrorDetail
+    
+    package struct ErrorDetail: Codable {
+        let code: ApiErrorCode
+        let description: String
+    }
 }
 
-enum RunStatus: String, Codable {
-    case notStarted = "NOT_STARTED"
-    case inProgress = "IN_PROGRESS"
-    case completed = "COMPLETED"
-    case cancelled = "CANCELLED"
+package struct Location: Codable, Identifiable {
+    package var id: String { locationId }
+    let locationId: String
+    let name: String
+    let latitude: Double
+    let longitude: Double
 }
 
-enum OrderStatus: String, Codable {
-    case pending = "PENDING"
-    case readyForPickup = "READY_FOR_PICKUP"
-    case inTransit = "IN_TRANSIT"
-    case delivered = "DELIVERED"
-    case cancelled = "CANCELLED"
+package struct Organisation: Codable, Identifiable {
+    package var id: String { userId }
+    let userId: String
+    let name: String
 }
 
-enum Urgency: String, Codable {
-    case low = "LOW"
-    case medium = "MEDIUM"
-    case high = "HIGH"
+package struct UserSummary: Codable, Identifiable {
+    package var id: String { userId }
+    let userId: String
+    let name: String
+    let role: Role?
 }
 
-enum CarSize: String, Codable {
-    case small = "SMALL"
-    case medium = "MEDIUM"
-    case large = "LARGE"
+package struct Order: Codable, Identifiable {
+    package var id: String { orderId }
+    let orderId: String
+    let runId: String?
+    let size: CarSize
+    let description: String
+    let status: OrderStatus
+    let urgency: Urgency
+    let from: Location
+    let to: Location
+    let fromOrganisation: Organisation?
+    let toOrganisation: Organisation?
+    let volunteer: UserSummary?
+    let dueAt: Date?
+    let pickupNotes: String?
+    let dropoffNotes: String?
+    let createdBy: UserSummary
+    let createdAt: Date
 }
 
-enum ApiErrorCode: String, Codable {
-    case runNotFound = "RUN_NOT_FOUND"
-    case orderAlreadyTaken = "ORDER_ALREADY_TAKEN"
-    case runNotAssigned = "RUN_NOT_ASSIGNED"
-    case orderNotAvailable = "ORDER_NOT_AVAILABLE"
-    case orderTooLarge = "ORDER_TOO_LARGE"
-    case runNotInProgress = "RUN_NOT_IN_PROGRESS"
-    case orderNotFound = "ORDER_NOT_FOUND"
-    case locationNotFound = "LOCATION_NOT_FOUND"
-    case organisationNotFound = "ORGANISATION_NOT_FOUND"
-    case invalidRun = "INVALID_RUN"
-    case invalidOrder = "INVALID_ORDER"
-    case trackingUnavailable = "TRACKING_UNAVAILABLE"
-    case invalidCredentials = "INVALID_CREDENTIALS"
-    case addressNotFound = "ADDRESS_NOT_FOUND"
-    case emailAlreadyInUse = "EMAIL_ALREADY_IN_USE"
-    case validationError = "VALIDATION_ERROR"
-    case volunteerNotFound = "VOLUNTEER_NOT_FOUND"
+package struct Run: Codable, Identifiable {
+    package var id: String { runId }
+    let runId: String
+    let status: RunStatus
+    let volunteer: UserSummary?
+    let createdAt: Date
+    let startedAt: Date?
+    let completedAt: Date?
+    let orders: [Order]
 }
