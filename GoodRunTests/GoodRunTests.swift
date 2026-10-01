@@ -9,15 +9,11 @@ import Testing
 
 struct GoodRunTests {
 
-  @Test func example() async throws {
-    let service = ApiRequestsService(apiurl: "http://127.0.0.1:8000")
-    var res = try? await service.signup(username: "maxauhealey@gmail.com", password: "Password@123")
-    res = try? await service.login(username: "maxauhealey@gmail.com", password: "Password@123")
-    let runs = try? await service.getAllRuns()
-    if res == nil {
-      return
+    @Test func example() async throws {
+        let service = ApiRequestsService(apiurl: "http://127.0.0.1:8000")
+        //_ = try? await service.Signup(username: "maxahealey@icloud.com", password: "Password@123")
+        _ = try? await service.Login(username: "tara@example.com", password: "volunteer")
+        _ = try? await service.GetAvailableOrders()
     }
-    print(res!)
-  }
 
 }
