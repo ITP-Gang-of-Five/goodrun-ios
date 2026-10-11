@@ -18,21 +18,13 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            HStack {
-                Text("Good Run")
-                    .font(.headline)
-                    .foregroundStyle(.secondary)
-                    .fontWeight(.bold)
-                Text("MEDICAL PANTRY")
-                    .font(.subheadline)
-                    .fontWeight(.black)
-            }
+
             
             switch currentScreen {
             case .login:
                 LoginView(currentScreen: $currentScreen)
             case .home:
-                HomeView()
+                LoginView(currentScreen: $currentScreen)
             case .run:
                 LoginView(currentScreen: $currentScreen)
             }

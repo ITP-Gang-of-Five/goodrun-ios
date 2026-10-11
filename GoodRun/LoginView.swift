@@ -15,6 +15,7 @@ struct LoginView: View {
     let apiservice = ApiRequestsService(apiurl: "/")
     
     var body: some View {
+        Text("GoodRun App Login")
         Form {
             VStack {
                 Section {
@@ -28,9 +29,8 @@ struct LoginView: View {
                 }
                 Section {
                     Button("Login") {
-                        currentScreen = AppScreen.home
+                        //currentScreen = AppScreen.home
                     }
-
                     .clipShape(.capsule)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)

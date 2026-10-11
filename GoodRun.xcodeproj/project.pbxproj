@@ -28,12 +28,7 @@
 				ApiRequestsService.swift,
 				AuthService.swift,
 				Objects/AuthDtos.swift,
-				Objects/Enums.swift,
-				Objects/LocationDtos.swift,
-				Objects/Objects.swift,
-				Objects/OrderDtos.swift,
 				Objects/UserDtos.swift,
-				RouteService.swift,
 			);
 			target = 5067523A303722E100795927 /* GoodRunTests */;
 		};
