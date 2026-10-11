@@ -14,18 +14,30 @@ public enum AppScreen {
 }
 
 struct ContentView: View {
-  @State private var currentScreen: AppScreen = .login
-
-  var body: some View {
-    switch currentScreen {
-    case .login:
-      LoginView(currentScreen: $currentScreen)
-    case .home:
-      HomeView()
-    case .run:
-      LoginView(currentScreen: $currentScreen)
+    @State private var currentScreen: AppScreen = .login
+    
+    var body: some View {
+        NavigationStack {
+            HStack {
+                Text("Good Run")
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+                    .fontWeight(.bold)
+                Text("MEDICAL PANTRY")
+                    .font(.subheadline)
+                    .fontWeight(.black)
+            }
+            
+            switch currentScreen {
+            case .login:
+                LoginView(currentScreen: $currentScreen)
+            case .home:
+                HomeView()
+            case .run:
+                LoginView(currentScreen: $currentScreen)
+            }
+        }
     }
-  }
 }
 
 #Preview {

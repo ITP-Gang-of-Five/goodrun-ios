@@ -61,24 +61,6 @@ class KeychainHelper {
   }
 }
 
-struct RefreshTokenRequest: Encodable {
-  let refreshToken: String
-}
-
-struct LoginRequest: Encodable {
-  let username: String
-  let password: String
-}
-
-public struct LoginResponse: Decodable {
-  let jwtToken: String
-  let refreshToken: String
-}
-
-struct RefreshTokenResponse: Decodable {
-  let jwtToken: String
-  let refreshToken: String
-}
 
 public class AuthService {
   public static let shared = AuthService()

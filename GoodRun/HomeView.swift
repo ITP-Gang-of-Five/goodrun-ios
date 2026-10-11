@@ -6,14 +6,20 @@
 //
 
 import SwiftUI
-import WebKit
 
 enum FilterSetting: String, CaseIterable, Identifiable {
-  case all = "All"
-  case urgent = "Urgent"
-  case under30min = "Under 30 min"
+    case all = "All"
+    case urgent = "Urgent"
+    
+    var id: Self { self }
+}
 
-  var id: Self { self }
+extension Color {
+    static func pseudoRandom(from seed: String) -> Color {
+        let hash = abs(seed.hashValue)
+        let hue = Double(hash % 1000) / 1000.0
+        return Color(hue: hue, saturation: 0.8, brightness: 0.9)
+    }
 }
 
 struct HomeView: View {
@@ -150,5 +156,7 @@ struct HomeView: View {
     
 
 #Preview {
-  HomeView()
+    NavigationStack {
+        HomeView()
+    }
 }
