@@ -60,12 +60,20 @@ public class ApiRequestsService {
     public func Login(username: String, password: String) async throws -> Bool? {
         
         let credentials = LoginRequest(email: username, password: password)
-        let bodydata = try? JSONEncoder().encode(credentials)
+        var bodyData: Data?
+        do {
+            bodyData = try JSONEncoder().encode(credentials)
+        }
+        catch {
+            print("Encoding failed")
+            return nil
+        }
+        print(bodyData!.count)
         
         let response: HttpRequestReponse? = await sendRequest(
             endpoint: "/api/v0/auth/login",
             method: "POST",
-            body: bodydata,
+            body: bodyData!,
             addToken: false
         )
         
@@ -74,10 +82,9 @@ public class ApiRequestsService {
         }
         
         let decoder = JSONDecoder()
-        // decoder.dateDecodingStrategy = .iso8601 // Uncomment if your ErrorResponse has dates
+        decoder.dateDecodingStrategy = .iso8601
         
         do {
-            // 1. Attempt to decode the successful login response
             let loginResponse = try decoder.decode(LoginResponse.self, from: responseBody)
             
             if loginResponse.accessToken.isEmpty {
@@ -88,14 +95,12 @@ public class ApiRequestsService {
             return true
             
         } catch let successDecodeError {
-            // 2. If it fails (likely due to an invalid login returning an error body)
             do {
                 let errorResponse = try decoder.decode(ErrorResponse.self, from: responseBody)
                 print("Login API Error: \(errorResponse.error.code.rawValue) - \(errorResponse.error.description)")
                 return false
                 
             } catch let errorDecodeError {
-                // 3. If it isn't a known ErrorResponse either, print everything to debug
                 print("Failed to decode success response: \(successDecodeError)")
                 print("Failed to decode error response: \(errorDecodeError)")
                 

@@ -44,7 +44,7 @@ struct HomeView: View {
     var selectedOrders: [Order] {
         allOrders.filter {selectedOrderIDs.contains($0.id)}
     }
-    
+     
     
     var body: some View {
             
@@ -134,8 +134,9 @@ struct HomeView: View {
                         selectedOrderIDs = []
                     }
                 }
-                
-                NavigationLink(destination: RunView(runOrders: selectedOrders)) {
+                /*
+                NavigationLink(destination:
+                    RunView(runOrders: selectedOrders)) {
                     Text("Build run")
                         .frame(maxWidth: .infinity)
                         .backgroundStyle(.red)
@@ -143,7 +144,7 @@ struct HomeView: View {
                         
                     }
                 .buttonStyle(.automatic)
-                
+                */
                 
             }
             
