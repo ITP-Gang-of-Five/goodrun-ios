@@ -8,6 +8,7 @@
 import Foundation
 import UniformTypeIdentifiers
 import SwiftUI
+import CoreLocation
 
 package struct ErrorResponse: Codable, Error {
     let error: ErrorDetail
@@ -24,6 +25,10 @@ package struct Location: Codable, Identifiable {
     let name: String
     let latitude: Double
     let longitude: Double
+    
+    package func ToCoordinate() -> CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
 }
 
 package struct Organisation: Codable, Identifiable {

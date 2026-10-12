@@ -14,7 +14,7 @@ enum FilterSetting: String, CaseIterable, Identifiable {
     var id: Self { self }
 }
 
-extension Color {
+public extension Color {
     static func pseudoRandom(from seed: String) -> Color {
         let hash = abs(seed.hashValue)
         let hue = Double(hash % 1000) / 1000.0
@@ -115,7 +115,6 @@ struct HomeView: View {
             do {
                 try await apiService.Login(username: "tara@example.com", password: "volunteer")
                 allOrders = try await apiService.GetAvailableOrders().orders
-                allOrders += allOrders
                 selectedFilterOption = .all
             } catch {
                 print("Error fetching orders")

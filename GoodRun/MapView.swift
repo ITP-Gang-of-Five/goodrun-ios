@@ -19,6 +19,7 @@ struct MapPair: Identifiable {
 
 struct SimpleMapView: View {
     let connections: [MapPair]
+    
     var onDotTapped: (String) -> Void
 
     var body: some View {

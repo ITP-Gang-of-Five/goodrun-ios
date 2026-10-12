@@ -27,6 +27,7 @@
 			membershipExceptions = (
 				ApiRequestsService.swift,
 				AuthService.swift,
+				LocationManager.swift,
 				Objects/AuthDtos.swift,
 				Objects/Enums.swift,
 				Objects/LocationDtos.swift,

@@ -1,15 +1,24 @@
 import Foundation
 import CoreLocation
 
-package struct RouteStep {
+package struct RouteStep : Hashable {
+
     let order: Order
     let type: RouteStepType
     let location: Location
+    let id = UUID()
     
     enum RouteStepType {
         case pickup
         case dropoff
-        
+    }
+    
+    package static func == (lhs: borrowing RouteStep, rhs: RouteStep) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    package func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
     }
 }
     
@@ -59,15 +68,21 @@ package class RouteService {
                 && !route.contains {s in s.order.orderId == step.order.orderId && s.type == step.type }
             }
             
-            route.append(
+            let best =
                 validNext.max(
-                    by: { closerStep(a: $0, b: $1, from: from) } )!)
+                    by: { closerStep(a: $0, b: $1, from: from) } )
+            if best?.type == .pickup {
+                pickedUpOrders.insert((best?.order.orderId)!)
+            }
+            from = CLLocationCoordinate2D(latitude: (best?.location.latitude)!, longitude: (best?.location.longitude)!)
+            route.append(best!)
+            
         }
         
         return route
     }
     
-    func validateRoute(orders: [Order], route: [RouteStep]) -> Bool {
+    func validateRoute(route: [RouteStep]) -> Bool {
         var pickupsCompleted: Set<String> = []
         for step in route {
             if step.type == .dropoff {

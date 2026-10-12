@@ -27,18 +27,12 @@ struct ContentView: View {
                     .font(.subheadline)
                     .fontWeight(.black)
             }
-            
-            switch currentScreen {
-            case .login:
-                LoginView(currentScreen: $currentScreen)
-            case .home:
-                HomeView()
-            case .run:
-                LoginView(currentScreen: $currentScreen)
+
+            LoginView()
             }
         }
     }
-}
+
 
 #Preview {
   ContentView()
