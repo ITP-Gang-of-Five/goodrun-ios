@@ -13,13 +13,20 @@ class RunRouteViewModel {
   let runOrders: [Order]
   var showingError = false
   private let routeService: RouteService
+  var loadingSteps = true
 
   init(runOrders: [Order], routeService: RouteService) {
     self.routeService = routeService
     self.runOrders = runOrders
-
-    self.steps = routeService.naiveRoute(orders: runOrders)
+    self.steps = []
   }
+    
+    func loadSteps() async {
+        print("1")
+        self.steps = await routeService.naiveRoute(orders: runOrders)
+        print("2")
+        loadingSteps = false
+    }
 
   func moveRouteStep(from source: IndexSet, to destination: Int) {
     var tempSteps = steps

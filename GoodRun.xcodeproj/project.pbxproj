@@ -22,19 +22,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		506752453037257C00795927 /* Exceptions for "GoodRun" folder in "GoodRunTests" target */ = {
+		50ADEACE307F358700598CBD /* Exceptions for "GoodRun" folder in "GoodRunTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Objects/AuthDtos.swift,
-				Objects/Enums.swift,
-				Objects/LocationDtos.swift,
-				Objects/Objects.swift,
-				Objects/OrderDtos.swift,
-				Objects/UserDtos.swift,
 				Services/ApiRequestsService.swift,
-				Services/AuthService.swift,
 				Services/LocationManager.swift,
-				Services/RouteService.swift,
 			);
 			target = 5067523A303722E100795927 /* GoodRunTests */;
 		};
@@ -44,7 +36,7 @@
 		502A1012302F0782004ECF5F /* GoodRun */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				506752453037257C00795927 /* Exceptions for "GoodRun" folder in "GoodRunTests" target */,
+				50ADEACE307F358700598CBD /* Exceptions for "GoodRun" folder in "GoodRunTests" target */,
 			);
 			path = GoodRun;
 			sourceTree = "<group>";
