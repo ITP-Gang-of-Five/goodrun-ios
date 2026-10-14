@@ -21,47 +21,19 @@ struct RunView: View {
     let apiService = ApiRequestsService(apiurl: "http://127.0.0.1:8000")
     let routeService = RouteService()
     
-    // Core state tracking source
-    @State var runOrders: [Order]
+    var runOrders: [Order]
     @State var steps: [RouteStep] = []
     @State private var showingAutoFixNotice = false
 
     
     var body: some View {
         ZStack {
-            
-            if showingAutoFixNotice {
-                HStack(spacing: 8) {
-                    Image(systemName: "arrow.left.and.right.circle.fill")
-                        .foregroundColor(.red)
-                    Text("Cannot dropoff before pickup — Auto-corrected")
-                        .font(.footnote)
-                        .fontWeight(.medium)
-                        .foregroundColor(.primary)
-                }.ignoresSafeArea()
-                
-                .padding(.vertical, 10)
-                .padding(.horizontal, 16)
-                .background(.ultraThinMaterial) // Blends cleanly into any background
-                .cornerRadius(20)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.red.opacity(0.2), lineWidth: 1)
-                )
-                .shadow(color: .black.opacity(0.1), radius: 5)
-                .transition(.move(edge: .top).combined(with: .opacity))
-                .padding(.top, 10)
-                .frame(maxHeight: .infinity, alignment: .top) // Pins it neatly at the top
-            }
-            
-            
-            VStack(spacing: 0) {
-                Text("Your run")
+            VStack {
+                Text("Your Run:")
                     .font(.title2)
                     .bold()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
-                    .padding(.top)
                 
                 RouteMapView(route: steps)
                     .containerRelativeFrame(.vertical, alignment: .top) { length, _ in
@@ -86,7 +58,7 @@ struct RunView: View {
                             }
                             Task {
                                 try? await Task.sleep(nanoseconds: 1_500_000_000)
-                                withAnimation(.easeInOut(duration: 0.25)) {
+                                withAnimation(.default) {
                                     showingAutoFixNotice = false
                                 }
                             }
@@ -105,6 +77,28 @@ struct RunView: View {
                     steps = routeService.naiveRoute(orders: runOrders)
                 }
             }
+        }
+        if showingAutoFixNotice {
+            HStack(spacing: 8) {
+                Image(systemName: "arrow.left.and.right.circle.fill")
+                    .foregroundColor(.red)
+                Text("Cannot dropoff before pickup")
+                    .font(.footnote)
+                    .fontWeight(.medium)
+                    .foregroundColor(.primary)
+            }
+            .padding(.vertical, 10)
+            .padding(.horizontal, 16)
+            .background(.ultraThinMaterial)
+            .cornerRadius(20)
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.red.opacity(0.2), lineWidth: 1)
+            )
+            .shadow(color: .black.opacity(0.1), radius: 5)
+            .transition(.move(edge: .top).combined(with: .opacity))
+            .padding(.top, 10)
+            .frame(maxHeight: .infinity, alignment: .leading)
         }
     }
     
