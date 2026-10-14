@@ -16,7 +16,7 @@ struct MapView: View {
                 Button("Share Location") {
                     locationManager.requestLocationPermission()
                 }
-                
+
             case .authorizedWhenInUse, .authorizedAlways:
                 if let location = locationManager.location {
                     Text("Your location is: \(location.latitude), \(location.longitude)")
@@ -26,10 +26,10 @@ struct MapView: View {
                             locationManager.fetchCurrentLocation()
                         }
                 }
-                
+
             case .denied, .restricted:
                 Text("We need your location for this to work. Please enable it in Settings.")
-                
+
             default:
                 ProgressView()
             }

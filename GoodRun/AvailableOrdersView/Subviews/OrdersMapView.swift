@@ -14,7 +14,7 @@ struct OrdersMapView: View {
     @State private var position: MapCameraPosition = .automatic
     @Binding var selectedOrderIds: Set<String>
     let locationManager = LocationManager.shared
-    
+
     func toggleOrderSelection(orderId: String) {
         if !selectedOrderIds.contains(orderId) {
             selectedOrderIds.insert(orderId)
@@ -22,20 +22,20 @@ struct OrdersMapView: View {
             selectedOrderIds.remove(orderId)
         }
     }
-    
+
     var body: some View {
         Map(position: $position, interactionModes: [.pan, .zoom]) {
-            
+
             OrderMapFeatures(
                 orders: orders, selectedOrderIds: $selectedOrderIds, onClick: toggleOrderSelection)
             UserAnnotation()
-            
+
         }
         .onAppear {
             if locationManager.authorizationStatus == .notDetermined {
                 print("ASked")
                 locationManager.requestLocationPermission()
-                
+
             }
         }
         .mapStyle(.standard(pointsOfInterest: .excludingAll))
@@ -45,34 +45,32 @@ struct OrdersMapView: View {
         }
         .cornerRadius(12)
         .padding()
-        
-        
-        
+
     }
 }
 
-    struct OrderMapFeatures: MapContent {
+struct OrderMapFeatures: MapContent {
     let orders: [Order]
     @Binding var selectedOrderIds: Set<String>
     let onClick: (String) -> Void
 
     var route: [RouteStep] {
-    orders.flatMap { order in
-      [
-        RouteStep(order: order, type: .pickup, location: order.to),
-        RouteStep(order: order, type: .dropoff, location: order.from),
-      ]
-    }
+        orders.flatMap { order in
+            [
+                RouteStep(order: order, type: .pickup, location: order.to),
+                RouteStep(order: order, type: .dropoff, location: order.from),
+            ]
+        }
     }
 
     var body: some MapContent {
-    ForEach(orders) { order in
-      OrderOnMap(order: order, isSelected: selectedOrderIds.contains(order.id), onClick: onClick)
-    }
-    //LocationDots(route: route)
+        ForEach(orders) { order in
+            OrderOnMap(order: order, isSelected: selectedOrderIds.contains(order.id), onClick: onClick)
+        }
+        //LocationDots(route: route)
     }
 
-    }
+}
 
 struct OrderOnMap: MapContent {
     let order: Order
@@ -83,47 +81,47 @@ struct OrderOnMap: MapContent {
 
     var body: some MapContent {
 
-    MapPolyline(coordinates: [order.to.ToCoordinate(), order.from.ToCoordinate()])
-      .stroke(
-        isSelected ? color : color.opacity(0.6),
-        lineWidth: isSelected ? 4 : 2
-      )
+        MapPolyline(coordinates: [order.to.ToCoordinate(), order.from.ToCoordinate()])
+            .stroke(
+                isSelected ? color : color.opacity(0.6),
+                lineWidth: isSelected ? 4 : 2
+            )
 
-    Annotation("Start", coordinate: order.from.ToCoordinate()) {
-      MapDotCircle(color: color, isSelected: isSelected)
-        .onTapGesture {
-          onClick(order.orderId)
+        Annotation("Start", coordinate: order.from.ToCoordinate()) {
+            MapDotCircle(color: color, isSelected: isSelected)
+                .onTapGesture {
+                    onClick(order.orderId)
+                }
         }
-    }
-    .annotationTitles(.hidden)
+        .annotationTitles(.hidden)
 
-    Annotation("End", coordinate: order.to.ToCoordinate()) {
-      MapDotCircle(color: color, isSelected: isSelected)
-        .onTapGesture {
-          onClick(order.orderId)
+        Annotation("End", coordinate: order.to.ToCoordinate()) {
+            MapDotCircle(color: color, isSelected: isSelected)
+                .onTapGesture {
+                    onClick(order.orderId)
+                }
         }
+        .annotationTitles(.hidden)
     }
-    .annotationTitles(.hidden)
-    }
-    }
+}
 
-    struct MapDotCircle: View {
+struct MapDotCircle: View {
     let color: Color
     let isSelected: Bool
 
     var body: some View {
-    Circle()
-      .fill(color)
-      .frame(
-        width: isSelected ? 15 : 10,
-        height: isSelected ? 15 : 10
-      )
-      .overlay(
-        Circle().stroke(
-          isSelected ? color : Color.white,
-          lineWidth: isSelected ? 2 : 1
-        )
-      )
-      .shadow(radius: 3)
+        Circle()
+            .fill(color)
+            .frame(
+                width: isSelected ? 15 : 10,
+                height: isSelected ? 15 : 10
+            )
+            .overlay(
+                Circle().stroke(
+                    isSelected ? color : Color.white,
+                    lineWidth: isSelected ? 2 : 1
+                )
+            )
+            .shadow(radius: 3)
     }
 }

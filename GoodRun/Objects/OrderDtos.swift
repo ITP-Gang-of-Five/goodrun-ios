@@ -5,9 +5,7 @@
 //  Created by Max Healey on 14/10/2026.
 //
 
-
 import Foundation
-
 
 // MARK: - Runs
 package struct RunsResponse: Codable {
@@ -25,7 +23,7 @@ package struct CreateRunResponse: Codable {
 // MARK: - Orders
 package struct OrdersListResponse: Codable {
     let orders: [Order]
-    let total: Int? // Added for Admin/Org queries
+    let total: Int?  // Added for Admin/Org queries
 }
 
 package struct CreateOrderRequest: Codable {
@@ -60,14 +58,14 @@ package struct OrderDetailsResponse: Codable, Identifiable {
     let createdAt: Date
     let events: [OrderEvent]
     let images: [OrderImage]
-    
+
     package struct OrderEvent: Codable, Identifiable {
         package var id: String { eventId }
         let eventId: String
         let newStatus: OrderStatus
         let createdAt: Date
     }
-    
+
     package struct OrderImage: Codable, Identifiable {
         package var id: String { imageId }
         let imageId: String

@@ -19,7 +19,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         self.authorizationStatus = manager.authorizationStatus
         print("AUTH STATUS IS \(self.authorizationStatus, default: "NULL")")
     }
-    
+
     func requestLocationPermission() {
         manager.requestWhenInUseAuthorization()
     }
@@ -27,7 +27,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     func fetchCurrentLocation() {
         manager.requestLocation()
     }
-    
+
     func fetchLocationAsync() async throws -> CLLocationCoordinate2D {
         if locationContinuation != nil {
             throw NSError(domain: "LocationError", code: 2, userInfo: [NSLocalizedDescriptionKey: "Location request already in progress."])
@@ -42,7 +42,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
                 self.locationContinuation = continuation
                 manager.requestLocation()
             }
-            
+
         case .notDetermined:
             // We don't have permission yet. Pause and ask.
             return try await withCheckedThrowingContinuation { continuation in
@@ -50,11 +50,11 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
                 manager.requestWhenInUseAuthorization()
                 // We STOP here. The delegate method will take over when the user answers.
             }
-            
+
         case .denied, .restricted:
             // They previously denied it. Throw immediately.
             throw NSError(domain: "LocationError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Location permission denied."])
-            
+
         @unknown default:
             throw NSError(domain: "LocationError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Unknown authorization status."])
         }
@@ -63,42 +63,43 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     // MARK: - CLLocationManagerDelegate Methods
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-            guard let latestLocation = locations.last else { return }
-            
-            // Update UI properties
-            Task { @MainActor in self.location = latestLocation.coordinate }
-            
-            // 3. Resume the continuation and clear it
-            locationContinuation?.resume(returning: latestLocation.coordinate)
-            locationContinuation = nil
-        }
+        guard let latestLocation = locations.last else { return }
 
-        func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-            // 4. Resume throwing the error
-            locationContinuation?.resume(throwing: error)
-            locationContinuation = nil
-        }
+        // Update UI properties
+        Task { @MainActor in self.location = latestLocation.coordinate }
+
+        // 3. Resume the continuation and clear it
+        locationContinuation?.resume(returning: latestLocation.coordinate)
+        locationContinuation = nil
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        // 4. Resume throwing the error
+        locationContinuation?.resume(throwing: error)
+        locationContinuation = nil
+    }
 
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         Task { @MainActor in
             self.authorizationStatus = manager.authorizationStatus
-            
+
             // If we have an active continuation waiting for a permission decision...
             if self.locationContinuation != nil {
                 switch manager.authorizationStatus {
                 case .authorizedWhenInUse, .authorizedAlways:
                     // They tapped "Allow"! Now we can actually fetch the location.
                     manager.requestLocation()
-                    
+
                 case .denied, .restricted:
                     // They tapped "Don't Allow". Throw the error back to the caller.
-                    self.locationContinuation?.resume(throwing: NSError(domain: "LocationError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Location permission denied."]))
+                    self.locationContinuation?.resume(
+                        throwing: NSError(domain: "LocationError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Location permission denied."]))
                     self.locationContinuation = nil
-                    
+
                 case .notDetermined:
                     // User hasn't answered yet, do nothing.
                     break
-                    
+
                 @unknown default:
                     break
                 }
