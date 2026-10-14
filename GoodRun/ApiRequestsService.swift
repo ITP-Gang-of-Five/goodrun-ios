@@ -132,40 +132,6 @@ public class ApiRequestsService {
         } else {
             print("Failed to convert Data to UTF-8 String")
         }
-
-        
-        do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            decoder.dateDecodingStrategy = .iso8601
-            
-            let result = try decoder.decode(OrdersListResponse.self, from: response!.body!)
-            print("✅ Decoding successful!")
-            
-        } catch let DecodingError.keyNotFound(key, context) {
-            print("❌ Missing Key: '\(key.stringValue)'")
-            print("📍 Path: \(context.codingPath.map { $0.stringValue }.joined(separator: " -> "))")
-            print("📝 Debug: \(context.debugDescription)")
-            
-        } catch let DecodingError.typeMismatch(type, context) {
-            print("❌ Type Mismatch: Expected '\(type)'")
-            print("📍 Path: \(context.codingPath.map { $0.stringValue }.joined(separator: " -> "))")
-            print("📝 Debug: \(context.debugDescription)")
-            
-        } catch let DecodingError.valueNotFound(type, context) {
-            print("❌ Null Value Found: Expected '\(type)' but found null")
-            print("📍 Path: \(context.codingPath.map { $0.stringValue }.joined(separator: " -> "))")
-            print("📝 Debug: \(context.debugDescription)")
-            
-        } catch let DecodingError.dataCorrupted(context) {
-            print("❌ Data Corrupted")
-            print("📍 Path: \(context.codingPath.map { $0.stringValue }.joined(separator: " -> "))")
-            print("📝 Debug: \(context.debugDescription)")
-            
-        } catch {
-            print("❌ Unknown Error: \(error.localizedDescription)")
-        }
-        
          
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -195,6 +161,7 @@ public class ApiRequestsService {
         
     }
      */
+    
    
     
     
