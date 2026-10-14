@@ -26,7 +26,7 @@ struct LoginView: View {
                     
                 }
                 
-                NavigationLink(destination: HomeView()) {
+                NavigationLink(destination: AvailableOrdersView()) {
                     Text("Login")
                         .frame(maxWidth: .infinity)
                         .backgroundStyle(.blue)

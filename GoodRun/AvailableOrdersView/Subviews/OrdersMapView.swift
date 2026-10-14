@@ -26,9 +26,7 @@ struct OrdersMapView: View {
     var body: some View {
         Map(position: $position, interactionModes: [.pan, .zoom]) {
             
-            OrderMapFeatures(orders: orders, selectedOrderIds: $selectedOrderIds) {
-                id in toggleOrderSelection(orderId: id)
-            }
+            OrderMapFeatures(orders: orders, selectedOrderIds: $selectedOrderIds, onClick: toggleOrderSelection)
             UserAnnotation()
             
         }
@@ -55,7 +53,7 @@ struct OrderMapFeatures: MapContent {
         ForEach(orders) { order in
             OrderOnMap(order: order, isSelected: selectedOrderIds.contains(order.id), onClick: onClick)
         }
-        LocationDots(route: route)
+        //LocationDots(route: route)
     }
     
     

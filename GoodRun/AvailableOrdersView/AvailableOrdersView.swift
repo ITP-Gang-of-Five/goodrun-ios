@@ -7,22 +7,7 @@
 
 import SwiftUI
 
-enum FilterSetting: String, CaseIterable, Identifiable {
-    case all = "All"
-    case urgent = "Urgent"
-    
-    var id: Self { self }
-}
-
-public extension Color {
-    static func pseudoRandom(from seed: String) -> Color {
-        let hash = abs(seed.hashValue)
-        let hue = Double(hash % 1000) / 1000.0
-        return Color(hue: hue, saturation: 0.8, brightness: 0.9)
-    }
-}
-
-struct HomeView: View {
+struct AvailableOrdersView: View {
     
     let apiService = ApiRequestsService(apiurl: "http://127.0.0.1:8000")
     @State var allOrders: [Order] = []
@@ -36,8 +21,6 @@ struct HomeView: View {
         }
     }
     
-    
-     
     @State var selectedFilterOption: FilterSetting = .all
     @State var selectedOrderIDs: Set<String> = []
     
@@ -70,24 +53,7 @@ struct HomeView: View {
             .tint(.purple)
         }
         
-        let mapConnections = filteredOrders.map { order in
-            MapPair(
-                id: order.id,
-                startCoordinate: CLLocationCoordinate2D(latitude: order.to.latitude, longitude: order.to.longitude),
-                endCoordinate: CLLocationCoordinate2D(latitude: order.from.latitude, longitude: order.from.longitude),
-                color: Color.pseudoRandom(from: order.id),
-                isSelected: selectedOrderIDs.contains(order.id)
-            )
-        }
-        
-        SimpleMapView(connections: mapConnections) {
-            tappedID in
-            if selectedOrderIDs.contains(tappedID) {
-                selectedOrderIDs.remove(tappedID)
-            } else {
-                selectedOrderIDs.insert(tappedID)
-            }
-        }
+        OrdersMapView(orders: selectedOrders, selectedOrderIds: $selectedOrderIDs)
         .containerRelativeFrame(.vertical, alignment: .top) { length, _ in
             length * 0.35
         }
@@ -113,7 +79,7 @@ struct HomeView: View {
         
         .task {
             do {
-                try await apiService.Login(username: "tara@example.com", password: "volunteer")
+                _ = try await apiService.Login(username: "tara@example.com", password: "volunteer")
                 allOrders = try await apiService.GetAvailableOrders().orders
                 selectedFilterOption = .all
             } catch {
@@ -122,30 +88,7 @@ struct HomeView: View {
             }
         }
         if !selectedOrderIDs.isEmpty {
-            
-            HStack {
-                Text("\(selectedOrderIDs.count) selected")
-                    .font(.headline)
-                    .padding()
-                
-                if (!selectedOrderIDs.isEmpty) {
-                    Button("Clear") {
-                        selectedOrderIDs = []
-                    }
-                }
-                
-                NavigationLink(destination: RunView(runOrders: selectedOrders)) {
-                    Text("Build run")
-                        .frame(maxWidth: .infinity)
-                        .backgroundStyle(.red)
-                        .padding()
-                        
-                    }
-                .buttonStyle(.automatic)
-                
-                
-            }
-            
+            BuildRunPopupView(selectedOrders: selectedOrders, selectedOrderIDs: $selectedOrderIDs)
         }
     }
     
@@ -156,6 +99,21 @@ struct HomeView: View {
 
 #Preview {
     NavigationStack {
-        HomeView()
+        AvailableOrdersView()
+    }
+}
+
+enum FilterSetting: String, CaseIterable, Identifiable {
+    case all = "All"
+    case urgent = "Urgent"
+    
+    var id: Self { self }
+}
+
+public extension Color {
+    static func pseudoRandom(from seed: String) -> Color {
+        let hash = abs(seed.hashValue)
+        let hue = Double(hash % 1000) / 1000.0
+        return Color(hue: hue, saturation: 0.8, brightness: 0.9)
     }
 }
