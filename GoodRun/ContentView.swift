@@ -14,25 +14,24 @@ public enum AppScreen {
 }
 
 struct ContentView: View {
-    @State private var currentScreen: AppScreen = .login
-    
-    var body: some View {
-        NavigationStack {
-            HStack {
-                Text("Good Run")
-                    .font(.headline)
-                    .foregroundStyle(.secondary)
-                    .fontWeight(.bold)
-                Text("MEDICAL PANTRY")
-                    .font(.subheadline)
-                    .fontWeight(.black)
-            }
+  @State private var currentScreen: AppScreen = .login
 
-            LoginView()
-            }
-        }
+  var body: some View {
+    NavigationStack {
+      HStack {
+        Text("Good Run")
+          .font(.headline)
+          .foregroundStyle(.secondary)
+          .fontWeight(.bold)
+        Text("MEDICAL PANTRY")
+          .font(.subheadline)
+          .fontWeight(.black)
+      }
+
+      LoginView()
     }
-
+  }
+}
 
 #Preview {
   ContentView()

@@ -5,7 +5,6 @@
 //  Created by Max Healey on 14/10/2026.
 //
 
-
 //
 //  LoginService.swift
 //  GoodRun
@@ -68,7 +67,6 @@ class KeychainHelper {
     SecItemDelete(query as CFDictionary)
   }
 }
-
 
 public class AuthService {
   public static let shared = AuthService()
