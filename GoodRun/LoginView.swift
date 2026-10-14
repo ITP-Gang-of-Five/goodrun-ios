@@ -14,6 +14,7 @@ struct LoginView: View {
     let apiservice = ApiRequestsService(apiurl: "/")
     
     var body: some View {
+        Text("GoodRun App Login")
         Form {
             VStack {
                 Section {

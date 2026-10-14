@@ -27,7 +27,7 @@ struct AvailableOrdersView: View {
     var selectedOrders: [Order] {
         allOrders.filter {selectedOrderIDs.contains($0.id)}
     }
-    
+     
     
     var body: some View {
             
