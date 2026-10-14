@@ -25,16 +25,16 @@
 		506752453037257C00795927 /* Exceptions for "GoodRun" folder in "GoodRunTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				ApiRequestsService.swift,
-				AuthService.swift,
-				LocationManager.swift,
 				Objects/AuthDtos.swift,
 				Objects/Enums.swift,
 				Objects/LocationDtos.swift,
 				Objects/Objects.swift,
 				Objects/OrderDtos.swift,
 				Objects/UserDtos.swift,
-				RouteService.swift,
+				Services/ApiRequestsService.swift,
+				Services/AuthService.swift,
+				Services/LocationManager.swift,
+				Services/RouteService.swift,
 			);
 			target = 5067523A303722E100795927 /* GoodRunTests */;
 		};

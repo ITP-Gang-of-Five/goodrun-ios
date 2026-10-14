@@ -1,30 +1,22 @@
-import CoreLocation
 //
 //  SwiftUIView.swift
 //  GoodRun
 //
 //  Created by Max Healey on 16/8/2026.
 //
-import SwiftUI
-
 import CoreLocation
-//
-//  SwiftUIView.swift
-//  GoodRun
-//
-//  Created by Max Healey on 16/8/2026.
-//
 import SwiftUI
 
 struct RunView: View {
     
-    let apiService = ApiRequestsService(apiurl: "http://127.0.0.1:8000")
+    @State var viewModel: RunRouteViewModel
     let routeService = RouteService()
-    
     var runOrders: [Order]
-    @State var steps: [RouteStep] = []
-    @State private var showingAutoFixNotice = false
-
+    
+    init(runOrders: [Order]) {
+        self.viewModel = RunRouteViewModel(runOrders: runOrders, routeService: self.routeService)
+        self.runOrders = runOrders
+    }
     
     var body: some View {
         ZStack {
@@ -35,73 +27,17 @@ struct RunView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
                 
-                RouteMapView(route: steps)
-                    .containerRelativeFrame(.vertical, alignment: .top) { length, _ in
-                        length * 0.5
-                    }
+                RouteMapView(route: viewModel.steps)
+                        .ignoresSafeArea(edges: .vertical)
                 
-                List {
-                    ForEach(steps, id: \.id) { item in
-                        RouteStepView(step: item)
-                    }
-                    .onMove { source, destination in
-                        var tempSteps = steps
-                        tempSteps.move(fromOffsets: source, toOffset: destination)
-                        if routeService.validateRoute(route: tempSteps) {
-                            withAnimation(.default) {
-                                self.steps = tempSteps
-                            }
-                        }
-                        else {
-                            withAnimation(.spring(duration: 0.3)) {
-                                showingAutoFixNotice = true
-                            }
-                            Task {
-                                try? await Task.sleep(nanoseconds: 1_500_000_000)
-                                withAnimation(.default) {
-                                    showingAutoFixNotice = false
-                                }
-                            }
-                            DispatchQueue.main.async {
-                                let currentSteps = self.steps
-                                self.steps = []
-                                self.steps = currentSteps
-                            }
-                        }
-                    }
-                }
-                .environment(\.editMode, .constant(.active))
+                StepListView(steps: $viewModel.steps, showingErrorMessage: $viewModel.showingError)
+                
             }
-            .onAppear {
-                if steps.isEmpty {
-                    steps = routeService.naiveRoute(orders: runOrders)
-                }
-            }
+            if viewModel.showingError { InvalidRouteError() }
+            
         }
-        if showingAutoFixNotice {
-            HStack(spacing: 8) {
-                Image(systemName: "arrow.left.and.right.circle.fill")
-                    .foregroundColor(.red)
-                Text("Cannot dropoff before pickup")
-                    .font(.footnote)
-                    .fontWeight(.medium)
-                    .foregroundColor(.primary)
-            }
-            .padding(.vertical, 10)
-            .padding(.horizontal, 16)
-            .background(.ultraThinMaterial)
-            .cornerRadius(20)
-            .overlay(
-                RoundedRectangle(cornerRadius: 20)
-                    .stroke(Color.red.opacity(0.2), lineWidth: 1)
-            )
-            .shadow(color: .black.opacity(0.1), radius: 5)
-            .transition(.move(edge: .top).combined(with: .opacity))
-            .padding(.top, 10)
-            .frame(maxHeight: .infinity, alignment: .leading)
-        }
+        
     }
-    
 }
 
 
@@ -116,7 +52,5 @@ struct RunView: View {
         Order(orderId: UUID().uuidString, runId: UUID().uuidString, size: .small, description: "Order 2", status: .pending, urgency: .low, from: from2, to: to2, fromOrganisation: nil, toOrganisation: nil, volunteer: nil, dueAt: Date.now, pickupNotes: "Back door", dropoffNotes: "Porch", createdBy: UserSummary(userId: "abcd", name: "Max", role: .admin), createdAt: Date.now)
     ]
     
-    NavigationStack {
-        RunView(runOrders: orders)
-    }.ignoresSafeArea()
+    RunView(runOrders: orders)
 }
