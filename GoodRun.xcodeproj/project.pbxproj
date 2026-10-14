@@ -28,6 +28,10 @@
 				ApiRequestsService.swift,
 				AuthService.swift,
 				Objects/AuthDtos.swift,
+				Objects/Enums.swift,
+				Objects/LocationDtos.swift,
+				Objects/Objects.swift,
+				Objects/OrderDtos.swift,
 				Objects/UserDtos.swift,
 			);
 			target = 5067523A303722E100795927 /* GoodRunTests */;
@@ -348,6 +352,7 @@
 				DEVELOPMENT_TEAM = 467K2699JC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location for order locality";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -381,6 +386,7 @@
 				DEVELOPMENT_TEAM = 467K2699JC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location for order locality";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

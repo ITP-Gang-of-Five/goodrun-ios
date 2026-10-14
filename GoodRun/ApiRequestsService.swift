@@ -60,12 +60,20 @@ public class ApiRequestsService {
     public func Login(username: String, password: String) async throws -> Bool? {
         
         let credentials = LoginRequest(email: username, password: password)
-        let bodydata = try? JSONEncoder().encode(credentials)
+        var bodyData: Data?
+        do {
+            bodyData = try JSONEncoder().encode(credentials)
+        }
+        catch {
+            print("Encoding failed")
+            return nil
+        }
+        print(bodyData!.count)
         
         let response: HttpRequestReponse? = await sendRequest(
             endpoint: "/api/v0/auth/login",
             method: "POST",
-            body: bodydata,
+            body: bodyData!,
             addToken: false
         )
         
@@ -152,7 +160,8 @@ public class ApiRequestsService {
         return response!.statusCode == 200
         
     }
-    */
+     */
+    
    
     
     
