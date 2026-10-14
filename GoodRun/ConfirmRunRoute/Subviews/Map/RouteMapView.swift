@@ -12,6 +12,7 @@ import WebKit
 struct RouteMapView: View {
   let route: [RouteStep]
   @State private var position: MapCameraPosition = .automatic
+    let locationManager = LocationManager.shared
 
   var body: some View {
     Map(position: $position, interactionModes: [.pan, .zoom]) {
@@ -28,5 +29,10 @@ struct RouteMapView: View {
     }
     .cornerRadius(12)
     .padding()
+    .onAppear {
+        if locationManager.authorizationStatus == .notDetermined {
+            locationManager.requestLocationPermission()
+        }
+    }
   }
 }

@@ -31,7 +31,7 @@ package struct RouteStep: Hashable {
 
 package class RouteService {
 
-  private var locationManager = LocationManager()
+    private var locationManager = LocationManager.shared
 
   func closerStep(a: RouteStep, b: RouteStep, from: CLLocationCoordinate2D) -> Bool {
 
@@ -48,7 +48,7 @@ package class RouteService {
     return distanceA > distanceB
   }
 
-  func naiveRoute(orders: [Order]) -> [RouteStep] {
+  func naiveRoute(orders: [Order]) async -> [RouteStep] {
 
     var allSteps: [RouteStep] = []
     for order in orders {
@@ -64,15 +64,22 @@ package class RouteService {
     }
 
     var route: [RouteStep] = []
-    var from =
-      locationManager.location
-      ?? CLLocationCoordinate2D(
-        latitude: allSteps[0].location.latitude, longitude: allSteps[0].location.longitude)
+      
+    var from: CLLocationCoordinate2D
+
+    do {
+        from = try await locationManager.fetchLocationAsync()
+    }
+    catch {
+        from = CLLocationCoordinate2D(
+        latitude: allSteps[0].location.latitude,
+        longitude: allSteps[0].location.longitude )
+    }
 
     var pickedUpOrders: Set<String> = []
 
     for _ in allSteps {
-      var validNext = allSteps.filter { (step: RouteStep) in
+        let validNext = allSteps.filter { (step: RouteStep) in
         (step.type == .pickup
           || pickedUpOrders.contains(step.order.id))
 

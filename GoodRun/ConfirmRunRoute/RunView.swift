@@ -15,32 +15,43 @@ struct RunView: View {
 
   init(runOrders: [Order]) {
     self.viewModel = RunRouteViewModel(runOrders: runOrders, routeService: self.routeService)
-    self.runOrders = runOrders
+    self.runOrders = []
   }
 
   var body: some View {
-    ZStack {
-      VStack {
-        Text("Your Run:")
-          .font(.title2)
-          .bold()
-          .frame(maxWidth: .infinity, alignment: .leading)
-          .padding(.horizontal)
-
-        RouteMapView(route: viewModel.steps)
-          .ignoresSafeArea(edges: .vertical)
-
-        StepListView(steps: $viewModel.steps, showingErrorMessage: $viewModel.showingError)
-
+      Group {
+          if viewModel.loadingSteps {
+              ProgressView("Loading data...")
+          }
+          else {
+              ZStack {
+                  VStack {
+                      Text("Your Run:")
+                          .font(.title2)
+                          .bold()
+                          .frame(maxWidth: .infinity, alignment: .leading)
+                          .padding(.horizontal)
+                      
+                      RouteMapView(route: viewModel.steps)
+                          .ignoresSafeArea(edges: .vertical)
+                      
+                      
+                      StepListView(steps: $viewModel.steps, showingErrorMessage: $viewModel.showingError)
+                      
+                  }
+                  if viewModel.showingError { InvalidRouteError() }
+                  
+              }
+          }
+      }.task {
+          viewModel.loadingSteps = true
+          await viewModel.loadSteps()
       }
-      if viewModel.showingError { InvalidRouteError() }
-
-    }
-
   }
 }
 
 #Preview {
+    
   let to = Location(
     locationId: UUID().uuidString, name: "Monash Uni1", latitude: 2, longitude: 4.56)
   let from = Location(
@@ -51,7 +62,12 @@ struct RunView: View {
     locationId: UUID().uuidString, name: "Warehouse2", latitude: -1.26, longitude: 8)
 
   let orders = [
-    Order(orderId: UUID().uuidString, runId: UUID().uuidString, size: .large, description: "DESC", status: .pending, urgency: .high, from: <#T##Location#>, to: <#T##Location#>, fromOrganisation: <#T##Organisation?#>, toOrganisation: <#T##Organisation?#>, volunteer: <#T##UserSummary?#>, dueAt: <#T##Date?#>, pickupNotes: <#T##String?#>, dropoffNotes: <#T##String?#>, createdBy: <#T##UserSummary#>, createdAt: <#T##Date#>)
+    Order(
+      orderId: UUID().uuidString, runId: UUID().uuidString, size: .small, description: "Order 1",
+      status: .pending, urgency: .low, from: from, to: to, fromOrganisation: nil,
+      toOrganisation: nil, volunteer: nil, dueAt: Date.now, pickupNotes: "Back door",
+      dropoffNotes: "Porch", createdBy: UserSummary(userId: "abcd", name: "Max", role: .admin), createdAt: Date.now),
+      
     Order(
       orderId: UUID().uuidString, runId: UUID().uuidString, size: .small, description: "Order 2",
       status: .pending, urgency: .low, from: from2, to: to2, fromOrganisation: nil,
