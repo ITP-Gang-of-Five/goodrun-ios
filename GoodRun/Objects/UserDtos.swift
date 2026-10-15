@@ -5,9 +5,7 @@
 //  Created by Max Healey on 14/10/2026.
 //
 
-
 import Foundation
-
 
 // MARK: - Profiles & Volunteers
 struct ProfileResponse: Codable, Identifiable {
@@ -27,7 +25,7 @@ struct UpdateProfileRequest: Codable {
 
 struct VolunteersResponse: Codable {
     let volunteers: [VolunteerProfile]
-    
+
     struct VolunteerProfile: Codable, Identifiable {
         var id: String { userId }
         let userId: String
@@ -46,7 +44,7 @@ struct VolunteerStatsResponse: Codable, Identifiable {
     let carSize: CarSize?
     let createdAt: Date
     let stats: VolunteerStats
-    
+
     struct VolunteerStats: Codable {
         let runsCompleted: Int
         let runsCancelled: Int

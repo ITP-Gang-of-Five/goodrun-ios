@@ -8,161 +8,161 @@
 import Foundation
 
 struct HttpRequestReponse {
-  let statusCode: Int
-  let body: Data?
+    let statusCode: Int
+    let body: Data?
 }
 
 public class ApiRequestsService {
 
-  private let authService: AuthService
-  public let url: String
+    private let authService: AuthService
+    public let url: String
 
-  public init(apiurl: String) {
-    authService = AuthService.shared
-    url = apiurl
-  }
-
-  private func sendRequest(
-    endpoint: String, method: String, body: Data? = nil, addToken: Bool = false
-  ) async -> HttpRequestReponse? {
-
-    guard let url = URL(string: self.url + endpoint) else { return nil }
-
-    var request = URLRequest(url: url)
-    request.httpMethod = method
-    request.httpBody = body
-
-    if body != nil {
-      request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    public init(apiurl: String) {
+        authService = AuthService.shared
+        url = apiurl
     }
 
-    if addToken {
-      if let token = self.authService.jwtToken {
-        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-      } else {
-        print("No token found, user is not logged in!")
-        return nil
-      }
+    private func sendRequest(
+        endpoint: String, method: String, body: Data? = nil, addToken: Bool = false
+    ) async -> HttpRequestReponse? {
 
-    }
-    do {
-      let (data, response) = try await URLSession.shared.data(for: request)
+        guard let url = URL(string: self.url + endpoint) else { return nil }
 
-      guard let httpResponse = response as? HTTPURLResponse else {
-        return nil
-      }
-      return HttpRequestReponse(statusCode: httpResponse.statusCode, body: data)
+        var request = URLRequest(url: url)
+        request.httpMethod = method
+        request.httpBody = body
 
-    } catch {
-      print("Request failed: \(error.localizedDescription)")
-      return nil
-    }
-  }
-
-  public func Login(username: String, password: String) async throws -> Bool? {
-
-    let credentials = LoginRequest(email: username, password: password)
-    var bodyData: Data?
-    do {
-      bodyData = try JSONEncoder().encode(credentials)
-    } catch {
-      print("Encoding failed")
-      return nil
-    }
-    print(bodyData!.count)
-
-    let response: HttpRequestReponse? = await sendRequest(
-      endpoint: "/api/v0/auth/login",
-      method: "POST",
-      body: bodyData!,
-      addToken: false
-    )
-
-    guard let response = response, let responseBody = response.body else {
-      return nil
-    }
-
-    let decoder = JSONDecoder()
-    decoder.dateDecodingStrategy = .iso8601
-
-    do {
-      let loginResponse = try decoder.decode(LoginResponse.self, from: responseBody)
-
-      if loginResponse.accessToken.isEmpty {
-        return false
-      }
-
-      authService.jwtToken = loginResponse.accessToken
-      return true
-
-    } catch let successDecodeError {
-      do {
-        let errorResponse = try decoder.decode(ErrorResponse.self, from: responseBody)
-        print(
-          "Login API Error: \(errorResponse.error.code.rawValue) - \(errorResponse.error.description)"
-        )
-        return false
-
-      } catch let errorDecodeError {
-        print("Failed to decode success response: \(successDecodeError)")
-        print("Failed to decode error response: \(errorDecodeError)")
-
-        if let rawString = String(data: responseBody, encoding: .utf8) {
-          print("Raw response body: \(rawString)")
+        if body != nil {
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         }
 
-        return false
-      }
+        if addToken {
+            if let token = self.authService.jwtToken {
+                request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            } else {
+                print("No token found, user is not logged in!")
+                return nil
+            }
+
+        }
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                return nil
+            }
+            return HttpRequestReponse(statusCode: httpResponse.statusCode, body: data)
+
+        } catch {
+            print("Request failed: \(error.localizedDescription)")
+            return nil
+        }
     }
-  }
 
-  package func GetAvailableOrders() async throws -> OrdersListResponse {
-    let response: HttpRequestReponse? = await sendRequest(
-      endpoint: "/api/v0/orders/available",
-      method: "GET",
-      body: nil,
-      addToken: true)
+    public func Login(username: String, password: String) async -> Bool? {
 
-    if response == nil || response?.body == nil {
-      return OrdersListResponse(orders: [], total: 0)
+        let credentials = LoginRequest(email: username, password: password)
+        var bodyData: Data?
+        do {
+            bodyData = try JSONEncoder().encode(credentials)
+        } catch {
+            print("Encoding failed")
+            return nil
+        }
+        print(bodyData!.count)
+
+        let response: HttpRequestReponse? = await sendRequest(
+            endpoint: "/api/v0/auth/login",
+            method: "POST",
+            body: bodyData!,
+            addToken: false
+        )
+
+        guard let response = response, let responseBody = response.body else {
+            return nil
+        }
+
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+
+        do {
+            let loginResponse = try decoder.decode(LoginResponse.self, from: responseBody)
+
+            if loginResponse.accessToken.isEmpty {
+                return false
+            }
+
+            authService.jwtToken = loginResponse.accessToken
+            return true
+
+        } catch let successDecodeError {
+            do {
+                let errorResponse = try decoder.decode(ErrorResponse.self, from: responseBody)
+                print(
+                    "Login API Error: \(errorResponse.error.code.rawValue) - \(errorResponse.error.description)"
+                )
+                return false
+
+            } catch let errorDecodeError {
+                print("Failed to decode success response: \(successDecodeError)")
+                print("Failed to decode error response: \(errorDecodeError)")
+
+                if let rawString = String(data: responseBody, encoding: .utf8) {
+                    print("Raw response body: \(rawString)")
+                }
+
+                return false
+            }
+        }
     }
 
-    if let jsonString = String(data: response!.body!, encoding: .utf8) {
-      print("=== RAW JSON ===")
-      print(jsonString)
-      print("================\n")
-    } else {
-      print("Failed to convert Data to UTF-8 String")
+    package func GetAvailableOrders() async throws -> OrdersListResponse {
+        let response: HttpRequestReponse? = await sendRequest(
+            endpoint: "/api/v0/orders/available",
+            method: "GET",
+            body: nil,
+            addToken: true)
+
+        if response == nil || response?.body == nil {
+            return OrdersListResponse(orders: [], total: 0)
+        }
+
+        if let jsonString = String(data: response!.body!, encoding: .utf8) {
+            print("=== RAW JSON ===")
+            print(jsonString)
+            print("================\n")
+        } else {
+            print("Failed to convert Data to UTF-8 String")
+        }
+
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        decoder.dateDecodingStrategy = .iso8601
+        let orders: OrdersListResponse = try decoder.decode(
+            OrdersListResponse.self, from: (response?.body)!)
+
+        return orders
+
     }
 
-    let decoder = JSONDecoder()
-    decoder.keyDecodingStrategy = .convertFromSnakeCase
-    decoder.dateDecodingStrategy = .iso8601
-    let orders: OrdersListResponse = try decoder.decode(
-      OrdersListResponse.self, from: (response?.body)!)
+    /*
+    public func AcceptRun(runId: Int) async throws -> Bool {
 
-    return orders
+        var body = RunIdDto(run_id: runId)
+        let bodydata = try? JSONEncoder().encode(body)
 
-  }
+        let response: HttpRequestReponse? = await sendRequest(
+            endpoint: "/api/v0/auth/accept",
+            method: "GET",
+            body: nil,
+            addToken: true);
 
-  /*
-  public func AcceptRun(runId: Int) async throws -> Bool {
+        if (response == nil) {
+            return false ;
+        }
+        return response!.statusCode == 200
 
-      var body = RunIdDto(run_id: runId)
-      let bodydata = try? JSONEncoder().encode(body)
-
-      let response: HttpRequestReponse? = await sendRequest(
-          endpoint: "/api/v0/auth/accept",
-          method: "GET",
-          body: nil,
-          addToken: true);
-
-      if (response == nil) {
-          return false ;
-      }
-      return response!.statusCode == 200
-
-  }
-   */
+    }
+     */
 
 }

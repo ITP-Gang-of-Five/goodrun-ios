@@ -5,7 +5,6 @@
 //  Created by Max Healey on 14/10/2026.
 //
 
-
 //
 //  Enums.swift
 //  GoodRun

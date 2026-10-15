@@ -5,7 +5,6 @@
 //  Created by Max Healey on 14/10/2026.
 //
 
-
 //
 //  Enums.swift
 //  GoodRun
@@ -24,7 +23,7 @@ package struct LoginResponse: Codable {
     let accessToken: String
     let refreshToken: String
     let user: UserSummary
-    
+
     enum CodingKeys: String, CodingKey {
         case accessToken = "access_token"
         case refreshToken = "refresh_token"
@@ -34,7 +33,7 @@ package struct LoginResponse: Codable {
 
 package struct RefreshTokenRequest: Codable {
     let refreshToken: String
-    
+
     enum CodingKeys: String, CodingKey {
         case refreshToken = "refresh_token"
     }
@@ -43,7 +42,7 @@ package struct RefreshTokenRequest: Codable {
 package struct RefreshTokenResponse: Codable {
     let accessToken: String
     let refreshToken: String
-    
+
     enum CodingKeys: String, CodingKey {
         case accessToken = "access_token"
         case refreshToken = "refresh_token"

@@ -5,9 +5,7 @@
 //  Created by Max Healey on 14/10/2026.
 //
 
-
 import Foundation
-
 
 // MARK: - Tracking
 package struct UpdateTrackingLocationRequest: Codable {
@@ -39,7 +37,7 @@ package struct LocationsResponse: Codable {
 
 package struct AutocompleteResponse: Codable {
     let suggestions: [Suggestion]
-    
+
     package struct Suggestion: Codable, Identifiable {
         package var id: String { suggestionId }
         let suggestionId: String
@@ -66,7 +64,7 @@ package struct CreateLocationResponse: Codable {
 // MARK: - Routing
 package struct CalculateRouteRequest: Codable {
     let stops: [RouteStop]
-    
+
     package struct RouteStop: Codable {
         let locationId: String
         let latitude: Double
@@ -79,7 +77,7 @@ package struct CalculateRouteResponse: Codable {
     let durationSeconds: Int
     let geometry: RouteGeometry
     let provider: String
-    
+
     package struct RouteGeometry: Codable {
         let type: String
         let coordinates: [[Double]]

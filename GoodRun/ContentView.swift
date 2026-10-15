@@ -7,32 +7,36 @@
 
 import SwiftUI
 
-public enum AppScreen {
-  case login
-  case home
-  case run
+enum AppScreen: Hashable {
+    case orders
+    case run(runOrders: [Order])
 }
 
 struct ContentView: View {
-  @State private var currentScreen: AppScreen = .login
 
-  var body: some View {
-    NavigationStack {
-      HStack {
-        Text("Good Run")
-          .font(.headline)
-          .foregroundStyle(.secondary)
-          .fontWeight(.bold)
-        Text("MEDICAL PANTRY")
-          .font(.subheadline)
-          .fontWeight(.black)
-      }
+    @State var loginModel = LoginViewModel()
 
-      LoginView()
+    var body: some View {
+
+        HStack {
+            Text("Good Run")
+                .font(.headline)
+                .foregroundStyle(.secondary)
+                .fontWeight(.bold)
+            Text("MEDICAL PANTRY")
+                .font(.subheadline)
+                .fontWeight(.black)
+        }
+        switch loginModel.loggingIn {
+        case .success:
+            HomeView()
+        default:
+            LoginView(model: loginModel)
+        }
+
     }
-  }
 }
 
 #Preview {
-  ContentView()
+    ContentView()
 }
