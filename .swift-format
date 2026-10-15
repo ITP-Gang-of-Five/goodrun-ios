@@ -47,7 +47,7 @@
     "NeverUseImplicitlyUnwrappedOptionals" : false,
     "NoAccessLevelOnExtensionDeclaration" : true,
     "NoAssignmentInExpressions" : true,
-    "NoBlockComments" : true,
+    "NoBlockComments" : false,
     "NoCasesWithOnlyFallthrough" : true,
     "NoEmptyLinesOpeningClosingBraces" : false,
     "NoEmptyTrailingClosureParentheses" : true,

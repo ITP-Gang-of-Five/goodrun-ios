@@ -1,3 +1,12 @@
 .DS_Store
+
+
+#added all per developer xcode state
+#all of the shared schemes will be in xcshareddata/ and will be committeed
+xcuserdata/
 *.xcuserstate
 *.xcbkptlist
+
+#build output
+DerivedData/
+build/
