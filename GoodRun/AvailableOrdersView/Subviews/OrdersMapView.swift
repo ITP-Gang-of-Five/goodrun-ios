@@ -67,7 +67,7 @@ struct OrderMapFeatures: MapContent {
         ForEach(orders) { order in
             OrderOnMap(order: order, isSelected: selectedOrderIds.contains(order.id), onClick: onClick)
         }
-        //LocationDots(route: route)
+        // LocationDots(route: route)
     }
 
 }
@@ -81,13 +81,13 @@ struct OrderOnMap: MapContent {
 
     var body: some MapContent {
 
-        MapPolyline(coordinates: [order.to.ToCoordinate(), order.from.ToCoordinate()])
+        MapPolyline(coordinates: [order.to.toCoordinate(), order.from.toCoordinate()])
             .stroke(
                 isSelected ? color : color.opacity(0.6),
                 lineWidth: isSelected ? 4 : 2
             )
 
-        Annotation("Start", coordinate: order.from.ToCoordinate()) {
+        Annotation("Start", coordinate: order.from.toCoordinate()) {
             MapDotCircle(color: color, isSelected: isSelected)
                 .onTapGesture {
                     onClick(order.orderId)
@@ -95,7 +95,7 @@ struct OrderOnMap: MapContent {
         }
         .annotationTitles(.hidden)
 
-        Annotation("End", coordinate: order.to.ToCoordinate()) {
+        Annotation("End", coordinate: order.to.toCoordinate()) {
             MapDotCircle(color: color, isSelected: isSelected)
                 .onTapGesture {
                     onClick(order.orderId)

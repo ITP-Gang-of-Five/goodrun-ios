@@ -59,7 +59,7 @@ public class ApiRequestsService {
         }
     }
 
-    public func Login(username: String, password: String) async -> Bool? {
+    public func login(username: String, password: String) async -> Bool? {
 
         let credentials = LoginRequest(email: username, password: password)
         var bodyData: Data?
@@ -116,7 +116,7 @@ public class ApiRequestsService {
         }
     }
 
-    package func GetAvailableOrders() async throws -> OrdersListResponse {
+    package func getAvailableOrders() async throws -> OrdersListResponse {
         let response: HttpRequestReponse? = await sendRequest(
             endpoint: "/api/v0/orders/available",
             method: "GET",

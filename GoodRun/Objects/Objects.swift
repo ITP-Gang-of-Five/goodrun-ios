@@ -26,7 +26,7 @@ package struct Location: Codable, Identifiable {
     let latitude: Double
     let longitude: Double
 
-    package func ToCoordinate() -> CLLocationCoordinate2D {
+    package func toCoordinate() -> CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
 }
