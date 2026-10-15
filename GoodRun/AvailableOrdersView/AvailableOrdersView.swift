@@ -80,8 +80,8 @@ struct AvailableOrdersView: View {
 
         .task {
             do {
-                _ = await apiService.Login(username: "tara@example.com", password: "volunteer")
-                allOrders = try await apiService.GetAvailableOrders().orders
+                _ = await apiService.login(username: "tara@example.com", password: "volunteer")
+                allOrders = try await apiService.getAvailableOrders().orders
                 selectedFilterOption = .all
             } catch {
                 print("Error fetching orders")

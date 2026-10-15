@@ -59,7 +59,7 @@ package class RouteService {
                 RouteStep(order: order, type: .dropoff, location: order.from))
         }
 
-        if !(allSteps.count > 0) {
+        if !(!allSteps.isEmpty) {
             return []
         }
 
@@ -82,7 +82,7 @@ package class RouteService {
                 (step.type == .pickup
                     || pickedUpOrders.contains(step.order.id))
 
-                    && !route.contains { s in s.order.orderId == step.order.orderId && s.type == step.type }
+                    && !route.contains { existing in existing.order.orderId == step.order.orderId && existing.type == step.type }
             }
 
             let best =
