@@ -14,7 +14,7 @@ struct Lines: MapContent {
 
     var body: some MapContent {
         ForEach(Array(zip(route.indices, route.indices.dropFirst())), id: \.0) { i, j in
-            MapPolyline(coordinates: [route[i].location.ToCoordinate(), route[j].location.ToCoordinate()])
+            MapPolyline(coordinates: [route[i].location.toCoordinate(), route[j].location.toCoordinate()])
                 .stroke(
                     Color.pseudoRandom(from: "\(i)"),
                     lineWidth: 8
@@ -28,7 +28,7 @@ struct LocationDots: MapContent {
 
     var body: some MapContent {
         ForEach(route.indices, id: \.self) { i in
-            Annotation(coordinate: route[i].location.ToCoordinate()) {
+            Annotation(coordinate: route[i].location.toCoordinate()) {
                 Circle()
                     .fill(Color.white)
                     .frame(width: 20, height: 20)

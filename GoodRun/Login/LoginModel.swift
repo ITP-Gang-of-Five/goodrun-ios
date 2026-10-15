@@ -24,7 +24,7 @@ class LoginViewModel {
 
     func login() async {
         loggingIn = .loading
-        let result = await apiService.Login(username: "tara@example.com", password: "volunteer")
+        let result = await apiService.login(username: "tara@example.com", password: "volunteer")
         if result == nil {
             loggingIn = .error
         } else if result == false {

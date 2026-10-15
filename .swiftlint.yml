@@ -16,13 +16,21 @@ disabled_rules:
   - trailing_comma
 
 line_length:
-  warning: 130
-  error: 160
+  warning: 160
+  error: 200
   ignores_urls: true
   ignores_comments: true
 
 identifier_name:
   min_length:
     warning: 2
+  #allowing short names for conventions like looping and coordinates
   excluded:
     - id
+    - i
+    - j
+    - k
+    - x
+    - y
+    - a
+    - b

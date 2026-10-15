@@ -8,6 +8,6 @@
 
 ## Checklist
 
-- [ ] I ran `xcrun swift-format format --in-place --recursive GoodRun GoodRunTests` and `swiftlint lint --strict` locally and everything passes
+- [ ] I ran the auto-fixers `xcrun swift-format format --in-place --recursive GoodRun GoodRunTests` and `swiftlint --fix`, then fixed anything `swiftlint lint --strict` still reports (e.g. naming) by hand
 - [ ] The app builds and runs in the simulator
 - [ ] I updated the docs / README if the change affects them
