@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var path: [AppScreen] = []
+    let model = HomeViewModel()
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -30,6 +31,8 @@ struct HomeView: View {
                     RunView(runOrders: runOrders, path: $path)
 
                 }
+            }.task {
+                await model.getCurrentRun()
             }
         }
     }

@@ -67,7 +67,6 @@ struct OrderMapFeatures: MapContent {
         ForEach(orders) { order in
             OrderOnMap(order: order, isSelected: selectedOrderIds.contains(order.id), onClick: onClick)
         }
-        //LocationDots(route: route)
     }
 
 }

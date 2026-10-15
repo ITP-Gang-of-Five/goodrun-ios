@@ -13,9 +13,9 @@ class HomeViewModel {
 
     let loading: Bool = false
 
-    let apiService = ApiRequestsService(apiurl: "")
+    let apiService = ApiRequestsService(apiurl: "http://127.0.0.1:8000")
 
-    func getCurrentRun() {
-
+    func getCurrentRun() async {
+        _ = try? await apiService.GetRuns()
     }
 }

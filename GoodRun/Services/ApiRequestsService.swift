@@ -145,6 +145,35 @@ public class ApiRequestsService {
 
     }
 
+    package func GetRuns() async throws -> RunsResponse {
+        let response: HttpRequestReponse? = await sendRequest(
+            endpoint: "/api/v0/runs/",
+            method: "GET",
+            body: nil,
+            addToken: true)
+
+        if response == nil || response?.body == nil {
+            return RunsResponse(runs: [])
+        }
+
+        if let jsonString = String(data: response!.body!, encoding: .utf8) {
+            print("=== RAW JSON ===")
+            print(jsonString)
+            print("================\n")
+        } else {
+            print("Failed to convert Data to UTF-8 String")
+        }
+
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        decoder.dateDecodingStrategy = .iso8601
+        let runs: RunsResponse = try decoder.decode(
+            RunsResponse.self, from: (response?.body)!)
+
+        return runs
+
+    }
+
     /*
     public func AcceptRun(runId: Int) async throws -> Bool {
 

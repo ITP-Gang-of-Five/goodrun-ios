@@ -80,7 +80,6 @@ struct AvailableOrdersView: View {
 
         .task {
             do {
-                _ = await apiService.Login(username: "tara@example.com", password: "volunteer")
                 allOrders = try await apiService.GetAvailableOrders().orders
                 selectedFilterOption = .all
             } catch {
